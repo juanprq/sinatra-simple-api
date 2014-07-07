@@ -40,6 +40,7 @@ post '/users' do
   else
     # Se envía un código de error al cliente para indicarle que algo asalió mal.
     halt 409
+  end
 end
 
 # Servicio para obtener un usuario en específico.
@@ -54,11 +55,12 @@ get '/users/:id' do |id|
   else
     # En caso de no encontrarse en la colección se responde con el código 404 indicando que el recurso no existe.
     halt 404
+  end
 end
 
 # Servicio para actualizar un recurso.
 put '/users/:id' do |id|
-    if @@params[id] != nil
+  if @@params[id] != nil
     # Se pasan los parámetros a la variable usuario
     user = accept_params(params, :name, :last_name, :document)
 
@@ -70,6 +72,7 @@ put '/users/:id' do |id|
   else
     # Se responde con el código de error ya que el recurso no fué encontrado.
     halt 404
+  end
 end
 
 # Servicio para eliminar un recurso.
@@ -85,4 +88,5 @@ delete '/users/:id' do |id|
   else
     # En caso de no encontrarlo se retorna el código de error.
     halt 404
+  end
 end
