@@ -74,5 +74,15 @@ end
 
 # Servicio para eliminar un recurso.
 delete '/users/:id' do |id|
-  
+  # Se verifica la existencia del recurso en el sistema.
+  if @@params[id] != nil
+    # Se remueve el recurso de la colección
+    user = @@users.delete(id)
+
+    # Se retorna un código de éxito y el contenido del usuario.
+    status 200
+    user
+  else
+    # En caso de no encontrarlo se retorna el código de error.
+    halt 404
 end
