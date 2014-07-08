@@ -5,13 +5,13 @@ require 'sinatra'
 require 'json'
 
 # Colección de usuarios a ser empleada por el sistema.
-@@users = {
+set(:users, {
   1 => {name: "Juan", last_name: "Ramírez", document: "1094891516"},
   2 => {name: "Daniel", last_name: "Arbelaez", document: "1094673845"},
   3 => {name: "José", last_name: "Ortiz", document: "1094627938"},
   4 => {name: "Carlos", last_name: "Ariza", document: "1090341289"},
   5 => {name: "Yamit", last_name: "Ospina", document: "1087649032"}
-}
+})
 
 # Filtro que se ejecuta antes de cada ruta.
 before do
@@ -37,7 +37,7 @@ end
 get '/users' do
   logger.info 'Se retorna la colección de usuarios.'
   # Se convierte el contenido de la colección a json.
-  @@users.to_json
+  settings.users.to_json
 end
 
 # Servicio para la creación del recurso usuario.
@@ -49,11 +49,11 @@ post '/users' do
   # Se verifica el identificador que no esté repetido.
   id = data['id'].to_i
 
-  if @@users[id].nil?
+  if settings.users[id].nil?
     # Se asignan los valores al objeto de usuario.
     user = accept_params(data['user'], 'name', 'last_name', 'document')
 
-    @@users[id] = user
+    settings.users[id] = user
     headers["Location"] = "/users/#{id}"
     status 201
   else
@@ -67,7 +67,7 @@ end
 get '/users/:id' do |id|
   logger.info 'Se va a obtener el usuario con id: #{id}'
   # Se obtiene el usuario de la colección.
-  user = @@users[id.to_i]
+  user = settings.users[id.to_i]
 
   # Se verifica si el usuario si es retornado.
   if user.nil?
@@ -90,7 +90,7 @@ put '/users/:id' do |id|
   # Se castea a entero.
   id = id.to_i
 
-  if @@users[id].nil?
+  if settings.users[id].nil?
     logger.info "El usuario con id #{id} no fué encontrado"
     # Se responde con el código de error ya que el recurso no fué encontrado.
     status 404
@@ -99,7 +99,7 @@ put '/users/:id' do |id|
     user = accept_params(data, 'name', 'last_name', 'document')
 
     # Se actualiza el valor del usuario en la colección de objetos.
-    @@users[id] = user
+    settings.users[id] = user
 
     # Se responde el código 204 para indicar que fué exitosa la operación pero no hay un contenido para responder.
     status 204
@@ -113,13 +113,13 @@ delete '/users/:id' do |id|
   id = id.to_i
 
   # Se verifica la existencia del recurso en el sistema.
-  if @@users[id].nil?
+  if settings.users[id].nil?
     logger.info "El usuario con id: #{id} no fué encontrado"
     # En caso de no encontrarlo se retorna el código de error.
     status 404    
   else
     # Se remueve el recurso de la colección
-    user = @@users.delete(id)
+    user = settings.users.delete(id)
 
     # Se retorna un código de éxito y el contenido del usuario.
     status 200
