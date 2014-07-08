@@ -6,11 +6,11 @@ require 'json'
 
 # Colección de usuarios a ser empleada por el sistema.
 @@users = {
-  1 => {name: "Juan", last_name: "Ramírez", document: 1094891516},
-  2 => {name: "Daniel", last_name: "Arbelaez", document: 1094673845},
-  3 => {name: "José", last_name: "Ortiz", document: 1094627938},
-  4 => {name: "Carlos", last_name: "Ariza", document: 1090341289},
-  5 => {name: "Yamit", last_name: "Ospina", document: 1087649032}
+  1 => {name: "Juan", last_name: "Ramírez", document: "1094891516"},
+  2 => {name: "Daniel", last_name: "Arbelaez", document: "1094673845"},
+  3 => {name: "José", last_name: "Ortiz", document: "1094627938"},
+  4 => {name: "Carlos", last_name: "Ariza", document: "1090341289"},
+  5 => {name: "Yamit", last_name: "Ospina", document: "1087649032"}
 }
 
 # Filtro que se ejecuta antes de cada ruta.
@@ -28,7 +28,7 @@ end
 # Servicio para la creación del recurso usuario.
 post '/users' do
   # Se verifica el identificador que no esté repetido.
-  id = params[:id]
+  id = params[:id].to_i
   if @@params[id] == null
     # Se emplea el método auxiliar para filtrar los parámetros que vienen de la petición para asignarlos a una nueva
     # variable.
@@ -46,12 +46,12 @@ end
 # Servicio para obtener un usuario en específico.
 get '/users/:id' do |id|
   # Se obtiene el usuario de la colección.
-  user = @@users[id]
+  user = @@users[id.to_i]
 
   # Se verifica si el usuario si es retornado.
   if user != nil
     # Se retorna el objeto encontrado.
-    users.to_json
+    user.to_json
   else
     # En caso de no encontrarse en la colección se responde con el código 404 indicando que el recurso no existe.
     halt 404
@@ -60,6 +60,9 @@ end
 
 # Servicio para actualizar un recurso.
 put '/users/:id' do |id|
+  # Se castea a entero.
+  id = id.to_i
+
   if @@params[id] != nil
     # Se pasan los parámetros a la variable usuario
     user = accept_params(params, :name, :last_name, :document)
@@ -77,6 +80,9 @@ end
 
 # Servicio para eliminar un recurso.
 delete '/users/:id' do |id|
+  # Se castea a entero
+  id = id.to_i
+
   # Se verifica la existencia del recurso en el sistema.
   if @@params[id] != nil
     # Se remueve el recurso de la colección
