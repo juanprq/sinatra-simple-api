@@ -29,7 +29,7 @@ end
 post '/users' do
   # Se verifica el identificador que no esté repetido.
   id = params[:id].to_i
-  if @@params[id] == null
+  if @@params[id].nil?
     # Se emplea el método auxiliar para filtrar los parámetros que vienen de la petición para asignarlos a una nueva
     # variable.
     user = accept_params(params, :name, :last_name, :document)
@@ -49,12 +49,12 @@ get '/users/:id' do |id|
   user = @@users[id.to_i]
 
   # Se verifica si el usuario si es retornado.
-  if user != nil
-    # Se retorna el objeto encontrado.
-    user.to_json
-  else
+  if user.nil?
     # En caso de no encontrarse en la colección se responde con el código 404 indicando que el recurso no existe.
     halt 404
+  else
+    # Se retorna el objeto encontrado.
+    user.to_json
   end
 end
 
@@ -63,7 +63,10 @@ put '/users/:id' do |id|
   # Se castea a entero.
   id = id.to_i
 
-  if @@params[id] != nil
+  if @@users[id].nil?
+    # Se responde con el código de error ya que el recurso no fué encontrado.
+    halt 404
+  else
     # Se pasan los parámetros a la variable usuario
     user = accept_params(params, :name, :last_name, :document)
 
@@ -72,9 +75,6 @@ put '/users/:id' do |id|
 
     # Se responde el código 204 para indicar que fué exitosa la operación pero no hay un contenido para responder.
     status 204
-  else
-    # Se responde con el código de error ya que el recurso no fué encontrado.
-    halt 404
   end
 end
 
@@ -84,15 +84,15 @@ delete '/users/:id' do |id|
   id = id.to_i
 
   # Se verifica la existencia del recurso en el sistema.
-  if @@params[id] != nil
+  if @@users[id].nil?
+    # En caso de no encontrarlo se retorna el código de error.
+    halt 404    
+  else
     # Se remueve el recurso de la colección
     user = @@users.delete(id)
 
     # Se retorna un código de éxito y el contenido del usuario.
     status 200
     user
-  else
-    # En caso de no encontrarlo se retorna el código de error.
-    halt 404
   end
 end
