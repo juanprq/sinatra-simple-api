@@ -27,21 +27,25 @@ end
 
 # Servicio para la creación del recurso usuario.
 post '/users' do
+  # Se recibe y se parsea el contenido json que llega
+  data = JSON.parse(request.body.string)
+
   # Se verifica el identificador que no esté repetido.
-  id = params[:id].to_i
+  id = data['id'].to_i
+
   if @@users[id].nil?
     # Se asignan los valores al objeto de usuario.
     user = Hash.new
-    user[:name] = params[:name]
-    user[:last_name] = params[:last_name]
-    user[:document] = params[:document]
+    user[:name] = data['user']['name']
+    user[:last_name] = data['user']['last_name']
+    user[:document] = data['user']['document']
 
     @@users[id] = user
-    headers["location"] = "/users/#{id}"
+    headers["Location"] = "/users/#{id}"
     status 201
   else
     # Se envía un código de error al cliente para indicarle que algo asalió mal.
-    halt 409
+    status 409
   end
 end
 
@@ -53,7 +57,7 @@ get '/users/:id' do |id|
   # Se verifica si el usuario si es retornado.
   if user.nil?
     # En caso de no encontrarse en la colección se responde con el código 404 indicando que el recurso no existe.
-    halt 404
+    status 404
   else
     # Se retorna el objeto encontrado.
     user.to_json
@@ -62,18 +66,21 @@ end
 
 # Servicio para actualizar un recurso.
 put '/users/:id' do |id|
+  # Se parsea el contenido a json
+  data = JSON.parse(request.body.string)
+
   # Se castea a entero.
   id = id.to_i
 
   if @@users[id].nil?
     # Se responde con el código de error ya que el recurso no fué encontrado.
-    halt 404
+    status 404
   else
     # Se pasan los parámetros a la variable usuario
     user = Hash.new
-    user[:name] = params[:name]
-    user[:last_name] = params[:last_name]
-    user[:document] = params[:document]
+    user[:name] = data['name']
+    user[:last_name] = data['last_name']
+    user[:document] = data['document']
 
     # Se actualiza el valor del usuario en la colección de objetos.
     @@users[id] = user
@@ -91,7 +98,7 @@ delete '/users/:id' do |id|
   # Se verifica la existencia del recurso en el sistema.
   if @@users[id].nil?
     # En caso de no encontrarlo se retorna el código de error.
-    halt 404    
+    status 404    
   else
     # Se remueve el recurso de la colección
     user = @@users.delete(id)
