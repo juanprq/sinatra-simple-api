@@ -88,7 +88,7 @@ put '/users/:id' do |id|
     status 404
   else
     # Se pasan los parámetros a la variable usuario
-    user = accept_params(data, 'name', 'last_name'. 'document')
+    user = accept_params(data, 'name', 'last_name', 'document')
 
     # Se actualiza el valor del usuario en la colección de objetos.
     @@users[id] = user
