@@ -29,10 +29,12 @@ end
 post '/users' do
   # Se verifica el identificador que no esté repetido.
   id = params[:id].to_i
-  if @@params[id].nil?
-    # Se emplea el método auxiliar para filtrar los parámetros que vienen de la petición para asignarlos a una nueva
-    # variable.
-    user = accept_params(params, :name, :last_name, :document)
+  if @@users[id].nil?
+    # Se asignan los valores al objeto de usuario.
+    user = Hash.new
+    user[:name] = params[:name]
+    user[:last_name] = params[:last_name]
+    user[:document] = params[:document]
 
     @@users[id] = user
     headers["location"] = "/users/#{id}"
@@ -68,7 +70,10 @@ put '/users/:id' do |id|
     halt 404
   else
     # Se pasan los parámetros a la variable usuario
-    user = accept_params(params, :name, :last_name, :document)
+    user = Hash.new
+    user[:name] = params[:name]
+    user[:last_name] = params[:last_name]
+    user[:document] = params[:document]
 
     # Se actualiza el valor del usuario en la colección de objetos.
     @@users[id] = user
