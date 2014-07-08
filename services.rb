@@ -35,6 +35,7 @@ end
 
 # Servicio para obtener la colección de usuarios del sistema.
 get '/users' do
+  logger.info 'Se retorna la colección de usuarios.'
   # Se convierte el contenido de la colección a json.
   @@users.to_json
 end
@@ -43,6 +44,7 @@ end
 post '/users' do
   # Se recibe y se parsea el contenido json que llega
   data = JSON.parse(request.body.string)
+  logger.info "Se va a crear un nuevo usuario con los datos: #{data.to_json}"
 
   # Se verifica el identificador que no esté repetido.
   id = data['id'].to_i
@@ -55,6 +57,7 @@ post '/users' do
     headers["Location"] = "/users/#{id}"
     status 201
   else
+    logger.error 'Ocurrió un error al tratar de crear un nuevo usuario'
     # Se envía un código de error al cliente para indicarle que algo asalió mal.
     status 409
   end
@@ -62,11 +65,13 @@ end
 
 # Servicio para obtener un usuario en específico.
 get '/users/:id' do |id|
+  logger.info 'Se va a obtener el usuario con id: #{id}'
   # Se obtiene el usuario de la colección.
   user = @@users[id.to_i]
 
   # Se verifica si el usuario si es retornado.
   if user.nil?
+    logger.info "El usuario con id: #{id} no fué encontrado en el sistema"
     # En caso de no encontrarse en la colección se responde con el código 404 indicando que el recurso no existe.
     status 404
   else
@@ -80,10 +85,13 @@ put '/users/:id' do |id|
   # Se parsea el contenido a json
   data = JSON.parse(request.body.string)
 
+  logger.info "Se va a actualizar el usuario con id: #{id} con los datos: #{data}"
+
   # Se castea a entero.
   id = id.to_i
 
   if @@users[id].nil?
+    logger.info "El usuario con id #{id} no fué encontrado"
     # Se responde con el código de error ya que el recurso no fué encontrado.
     status 404
   else
@@ -100,11 +108,13 @@ end
 
 # Servicio para eliminar un recurso.
 delete '/users/:id' do |id|
+  logger.info "Se va a eliminar el usuario con id: #{id}"
   # Se castea a entero
   id = id.to_i
 
   # Se verifica la existencia del recurso en el sistema.
   if @@users[id].nil?
+    logger.info "El usuario con id: #{id} no fué encontrado"
     # En caso de no encontrarlo se retorna el código de error.
     status 404    
   else
