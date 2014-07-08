@@ -126,3 +126,9 @@ delete '/users/:id' do |id|
     user
   end
 end
+
+# Respuesta cuando no se encuentra el recurso.
+not_found do
+  status 404
+  return '404, not found'
+end
