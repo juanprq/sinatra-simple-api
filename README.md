@@ -26,3 +26,10 @@ Configuración del ambiente local
 Para correr el archivo services es necesario tener todas las dependencias instaladas; para correr la aplicación se ejecuta el comando:
 
     ruby services.rb
+
+Para probar su funcionamiento se puede hacer uso de cualquier cliente http, he aquí unos ejemplos con cURL:
+    curl -i -X GET http://localhost:4567/users/
+    curl -i -X GET http://localhost:4567/users/1
+    curl -i -X POST -d '{"id" : 7, "user": {"name":"juan", "last_name":"test", "document" : "123"}}' http://localhost:4567/users
+    curl -i -X PUT -d '{"name":"test", "last_name":"test", "document" : "098"}' http://localhost:4567/users/7
+    curl -i -X DELETE http://localhost:4567/users/6
