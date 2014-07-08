@@ -19,6 +19,20 @@ before do
   content_type :json, charset: 'utf-8'
 end
 
+# Inscripción de helpers de la aplicación.
+helpers do
+  
+  # Se encarga de seleccionar solo los campos especificados de un Hash.
+  def accept_params(params, *fields)
+    result = Hash.new
+    fields.each do |name|
+      result[name] = params[name] if params[name]
+    end
+    result
+  end
+
+end
+
 # Servicio para obtener la colección de usuarios del sistema.
 get '/users' do
   # Se convierte el contenido de la colección a json.
@@ -35,10 +49,7 @@ post '/users' do
 
   if @@users[id].nil?
     # Se asignan los valores al objeto de usuario.
-    user = Hash.new
-    user[:name] = data['user']['name']
-    user[:last_name] = data['user']['last_name']
-    user[:document] = data['user']['document']
+    user = accept_params(data['user'], 'name', 'last_name', 'document')
 
     @@users[id] = user
     headers["Location"] = "/users/#{id}"
@@ -77,10 +88,7 @@ put '/users/:id' do |id|
     status 404
   else
     # Se pasan los parámetros a la variable usuario
-    user = Hash.new
-    user[:name] = data['name']
-    user[:last_name] = data['last_name']
-    user[:document] = data['document']
+    user = accept_params(data, 'name', 'last_name'. 'document')
 
     # Se actualiza el valor del usuario en la colección de objetos.
     @@users[id] = user
