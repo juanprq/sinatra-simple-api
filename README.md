@@ -17,8 +17,15 @@ Dependencias
 
 Es necesario tener ruby y su gestor de gemas(gem) instalado en el sistema, para ello se recomienda el uso de cualquiera de los administradores de ambiente conocidos como: RVM o rvenv.
 
+Para la ejecución de los servicios:
+
 * sinatra
 * json
+
+Para la ejecución de las pruebas:
+
+* minitest
+* rack-test
 
 Configuración del ambiente local
 --------------------------------
@@ -26,6 +33,10 @@ Configuración del ambiente local
 Para correr el archivo services es necesario tener todas las dependencias instaladas; para correr la aplicación se ejecuta el comando:
 
     ruby services.rb
+
+Para correr el archivo de pruebas:
+
+    ruby test.rb
 
 Para probar su funcionamiento se puede hacer uso de cualquier cliente http, he aquí unos ejemplos con cURL:
 

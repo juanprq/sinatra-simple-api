@@ -141,7 +141,7 @@ delete '/users/:id' do |id|
 
       # Se retorna un código de éxito y el contenido del usuario.
       status 200
-      user
+      user.to_json
     end
   else
     status 404
